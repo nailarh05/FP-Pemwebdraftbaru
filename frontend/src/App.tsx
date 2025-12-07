@@ -1,0 +1,44 @@
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import Register from "./pages/Register";
+import Sandbox from "./pages/Sandbox";
+import Login from "./pages/Login";
+import ProfilePage from "./pages/ProfilePage";
+import MyProjectsPage from "./pages/MyProjectsPage";
+import CreateQuiz from "./pages/CreateQuiz";
+import CreateProject from "./pages/CreateProject";
+import CreateUnjumble from "./pages/CreateUnjumble";
+import EditQuiz from "./pages/EditQuiz";
+import EditUnjumble from "./pages/EditUnjumble";
+import Quiz from "./pages/Quiz";
+import PlayUnjumble from "./pages/PlayUnjumble";
+import ProtectedRoute from "./routes/ProtectedRoutes";
+import Unjumble from "./pages/unjumble/gameUnjumble";
+
+function App() {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/sandbox" element={<Sandbox />} />
+        <Route path="/quiz/play/:id" element={<Quiz />} />
+        <Route path="/unjumble" element={<Unjumble />} />
+        <Route path="/unjumble/play/:id" element={<PlayUnjumble />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/my-projects" element={<MyProjectsPage />} />
+          <Route path="/create-projects" element={<CreateProject />} />
+          <Route path="/create-quiz" element={<CreateQuiz />} />
+          <Route path="/create-unjumble" element={<CreateUnjumble />} />
+          <Route path="/quiz/edit/:id" element={<EditQuiz />} />
+          <Route path="/unjumble/edit/:id" element={<EditUnjumble />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
+
+export default App;
