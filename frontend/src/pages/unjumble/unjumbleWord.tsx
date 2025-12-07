@@ -23,11 +23,9 @@ export default function UnjumbleWord({
   isActive = false,
 }: UnjumbleWordProps) {
   // Tentukan variant (gaya) tombol berdasarkan status isActive
-  // Jika isActive (di area tersusun), gunakan gaya default/primary.
-  // Jika tidak isActive (di area acak), gunakan gaya outline.
   const tileVariant = isActive ? "default" : "outline";
 
-  // Tentukan warna latar belakang tambahan untuk membedakan
+  // Warna latar belakang tambahan untuk membedakan
   const tileClass = isActive
     ? "m-1 p-4 text-base sm:text-lg shadow-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
     : "m-1 p-4 text-base sm:text-lg shadow-md hover:bg-gray-100 transition-all duration-200";
@@ -41,7 +39,7 @@ export default function UnjumbleWord({
       className={tileClass}
       style={{
         cursor: "pointer",
-        // Tambahkan sedikit transisi untuk efek visual saat diklik/hover
+        // Tambahkan sedikit transisi untuk efek visual saat diklik
         transform: "scale(1)",
       }}
     >
