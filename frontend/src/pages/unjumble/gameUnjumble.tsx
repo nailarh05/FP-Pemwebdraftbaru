@@ -1,16 +1,16 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import UnjumbleWord from "./unjumbleWord"; // Import komponen Tile kata
-import SentenceArea from "./sentence"; // Import komponen Area Kalimat
-import { Button } from "@/components/ui/button"; // Asumsi impor ShadCN Button
-import { Card, CardHeader, CardContent } from "@/components/ui/card"; // Asumsi impor ShadCN Card
+import UnjumbleWord from "./unjumbleWord";
+import SentenceArea from "./sentence";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 // --- Tipe Data ---
 interface Word {
   id: number;
   text: string;
-  isShuffled: boolean; // TRUE jika masih di area acak, FALSE jika sudah di area tersusun
-  clickOrder?: number; // Menyimpan urutan klik pemain
+  isShuffled: boolean;
+  clickOrder?: number;
 }
 
 interface Question {
@@ -20,9 +20,6 @@ interface Question {
   correctAnswer: string; // Kalimat yang benar
 }
 
-// --- Data Pertanyaan ---
-// Saya menambahkan soal yang lebih menantang (kalimat lebih panjang/kompleks),
-// tetap mempertahankan struktur `Question` agar fungsi yang ada tidak perlu diubah.
 const QUESTIONS: Question[] = [
   {
     id: 1,

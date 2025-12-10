@@ -7,11 +7,11 @@ import ProfilePage from "./pages/ProfilePage";
 import MyProjectsPage from "./pages/MyProjectsPage";
 import CreateQuiz from "./pages/CreateQuiz";
 import CreateProject from "./pages/CreateProject";
-import CreateUnjumble from "./pages/CreateUnjumble";
+import CreateUnjumble from "./pages/unjumble/CreateUnjumble";
 import EditQuiz from "./pages/EditQuiz";
-import EditUnjumble from "./pages/EditUnjumble";
+import EditUnjumble from "./pages/unjumble/EditUnjumble";
 import Quiz from "./pages/Quiz";
-import PlayUnjumble from "./pages/PlayUnjumble";
+import PlayUnjumble from "./pages/unjumble/PlayUnjumble";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import Unjumble from "./pages/unjumble/gameUnjumble";
 
