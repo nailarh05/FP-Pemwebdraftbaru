@@ -16,7 +16,8 @@ import {
     X,
     Sparkles,
 } from "lucide-react";
-import api, { baseURL } from "@/api/axios";
+import api from "@/api/axios";
+
 import {
     Dialog,
     DialogContent,
@@ -27,7 +28,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { generateSentences } from "@/lib/sentenceGenerator";
+import { generateSentences } from "./sentenceGenerator";
 
 interface Sentence {
     sentenceText: string;
@@ -66,16 +67,16 @@ function EditUnjumble() {
     useEffect(() => {
         const fetchGame = async () => {
             try {
-                const response = await api.get(`/api/game/game-type/unjumble/${id}/play/public`);
+                const response = await api.get(`/api/game/game-type/unjumble/${id}/edit `);
                 const data = response.data.data;
 
                 setTitle(data.name);
                 setDescription(data.description);
-                setThumbnailPreview(data.thumbnail_image ? `${baseURL}/${data.thumbnail_image}` : null);
+                setThumbnailPreview(data.thumbnail_image ? `${api.defaults.baseURL}/${data.thumbnail_image}` : null);
 
                 // Map existing sentences
                 if (data.sentences) {
-                    setSentences(data.sentences.map((s: any) => ({
+                    setSentences(data.sentences.map((s: { sentence_text: string }) => ({
                         sentenceText: s.sentence_text,
                         sentenceImage: null, // Images not yet handled in edit
                     })));

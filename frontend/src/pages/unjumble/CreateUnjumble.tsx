@@ -17,7 +17,7 @@ import {
     EyeIcon,
     Sparkles,
 } from "lucide-react";
-import { useCreateUnjumble } from "@/api/unjumble/useCreateUnjumble";
+import { useCreateUnjumble } from "./useCreateUnjumble";
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -39,7 +39,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { generateSentences } from "@/lib/sentenceGenerator";
+import { generateSentences } from "@/pages/unjumble/sentenceGenerator";
 
 interface Sentence {
     sentenceText: string;
@@ -48,7 +48,6 @@ interface Sentence {
 
 function CreateUnjumble() {
     const navigate = useNavigate();
-    const createUnjumble = useCreateUnjumble;
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -152,7 +151,7 @@ function CreateUnjumble() {
         };
 
         try {
-            await createUnjumble(payload);
+            await useCreateUnjumble(payload);
             toast.success("Unjumble game created successfully!");
             navigate("/my-projects");
         } catch (err) {
