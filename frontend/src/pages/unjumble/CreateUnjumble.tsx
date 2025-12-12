@@ -17,7 +17,7 @@ import {
     EyeIcon,
     Sparkles,
 } from "lucide-react";
-import { useCreateUnjumble } from "./useCreateUnjumble";
+import { createUnjumble } from "./useCreateUnjumble";
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -151,7 +151,7 @@ function CreateUnjumble() {
         };
 
         try {
-            await useCreateUnjumble(payload);
+            await createUnjumble(payload);
             toast.success("Unjumble game created successfully!");
             navigate("/my-projects");
         } catch (err) {

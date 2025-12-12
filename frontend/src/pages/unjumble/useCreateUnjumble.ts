@@ -25,7 +25,7 @@ interface UnjumbleSentence {
     sentence_image_array_index?: number;
 }
 
-export const useCreateUnjumble = async (payload: UnjumblePayload) => {
+export const createUnjumble = async (payload: UnjumblePayload) => {
     try {
         const formData = new FormData();
 
