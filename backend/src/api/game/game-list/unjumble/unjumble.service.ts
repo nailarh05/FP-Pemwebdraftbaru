@@ -22,7 +22,7 @@ interface IUnjumbleJson {
 }
 
 export class UnjumbleService {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   private static UNJUMBLE_SLUG = 'unjumble';
 
   static async createUnjumble(data: ICreateUnjumble, user_id: string) {
@@ -213,12 +213,10 @@ export class UnjumbleService {
         'User not allowed to delete this data',
       );
 
-    // Delete from DB first to ensure persistence consistency
     const deletedGame = await prisma.games.delete({
       where: { id: game_id },
     });
 
-    // Try to delete associated files, but don't block if it fails (e.g. file locks)
     try {
       await FileManager.deleteFolder(`game/unjumble/${game_id}`);
     } catch (error) {
@@ -230,7 +228,7 @@ export class UnjumbleService {
 
   static async updateUnjumble(
     game_id: string,
-    data: any, // using any for now to avoid deep import issues, but preferably IUpdateUnjumble
+    data: any,
     user_id: string,
     user_role: string,
   ) {
@@ -301,33 +299,46 @@ export class UnjumbleService {
   }
 
   async getPuzzle(): Promise<UnjumblePuzzle> {
-    const data = await prisma.unjumble.findFirst({
-      orderBy: { createdAt: 'asc' },
+    const data = await prisma.games.findFirst({
+      where: { game_template: { slug: UnjumbleService.UNJUMBLE_SLUG } },
+      orderBy: { created_at: 'asc' },
+      select: { id: true, game_json: true, created_at: true },
     });
 
     if (!data) throw new Error('Puzzle not found');
 
+    const json = data.game_json as unknown as IUnjumbleJson | null;
+    if (!json || !Array.isArray(json.sentences) || json.sentences.length === 0) {
+      throw new Error('Puzzle data not found');
+    }
+
+    const answer = String(json.sentences[0].sentence_text || '');
     return {
       id: data.id,
-      jumbled: shuffleWord(data.answer),
-      question: data.question ?? undefined,
+      jumbled: shuffleWord(answer),
+      question: undefined,
     };
   }
 
   async checkAnswer(
     body: UnjumbleCheckAnswerRequest,
   ): Promise<UnjumbleCheckAnswerResponse> {
-    // Note: This needs to be implemented against the Game logic not the legacy 'Unjumble' table
-    // For now keeping as is if it's being used by legacy code, but it seems to refer to 'prisma.unjumble' which I don't see in context. 
-    // Assuming legacy support.
-
-    const real = await prisma.unjumble.findUnique({
+    const real = await prisma.games.findUnique({
       where: { id: body.questionId },
+      select: { game_json: true, id: true },
     });
 
     if (!real) throw new Error('Question not found');
 
-    const correct = real.answer.toLowerCase() === body.answer.toLowerCase();
+    const json = real.game_json as unknown as IUnjumbleJson | null;
+    if (!json || !Array.isArray(json.sentences) || json.sentences.length === 0) {
+      throw new Error('Question data not found');
+    }
+
+    const correctAnswer = String(json.sentences[0].sentence_text || '').toLowerCase();
+    const given = String(body.answer || '').toLowerCase();
+
+    const correct = correctAnswer === given;
 
     return {
       status: true,
@@ -337,15 +348,39 @@ export class UnjumbleService {
     };
   }
 
-  async addPlayCount(): Promise<void> {
-    // Try to increment play counter on Games table if exists and matches name 'Unjumble'
+  async addPlayCount(gameId?: string, userId?: string): Promise<void> {
     try {
+      if (gameId) {
+        const game = await prisma.games.findUnique({
+          where: { id: gameId },
+          select: { is_published: true },
+        });
+
+        if (!game || !game.is_published)
+          throw new Error('Game not found');
+
+        const tx: (Prisma.Prisma__GamesClient<any> | Prisma.Prisma__UsersClient<any>)[] = [];
+
+        tx.push(prisma.games.update({
+          where: { id: gameId },
+          data: { total_played: { increment: 1 } },
+        }));
+
+        if (userId) {
+          tx.push(prisma.users.update({
+            where: { id: userId },
+            data: { total_game_played: { increment: 1 } },
+          }));
+        }
+
+        await prisma.$transaction(tx);
+        return;
+      }
       await prisma.games.updateMany({
-        where: { name: 'Unjumble' },
+        where: { game_template: { slug: UnjumbleService.UNJUMBLE_SLUG } },
         data: { total_played: { increment: 1 } },
       });
     } catch (err) {
-      // ignore if Games model doesn't match or update fails
     }
   }
 }

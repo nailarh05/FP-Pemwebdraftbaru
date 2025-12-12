@@ -1,6 +1,6 @@
-import router from './unjumble.route';
+import { UnjumbleController } from "./unjumble.controller";
 
 export default {
-  slug: 'unjumble',
-  router,
-};
+  slug: "unjumble",
+  router: UnjumbleController,
+}
