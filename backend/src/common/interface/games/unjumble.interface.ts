@@ -3,7 +3,6 @@ import { CheckAnswerSchema } from '@/api/game/game-list/quiz/schema';
 export interface UnjumblePuzzle {
   id: string;
   jumbled: string;
-  // optional original question text if available
   question?: string;
 }
 
@@ -17,4 +16,13 @@ export interface UnjumbleCheckAnswerResponse {
   score: number;
   status: boolean;
   message: string;
+}
+
+export interface IUnjumbleJson {
+  score_per_sentence: number;
+  is_randomized: boolean;
+  sentences: Array<{
+    sentence_text: string;
+    sentence_image: string | null;
+  }>;
 }

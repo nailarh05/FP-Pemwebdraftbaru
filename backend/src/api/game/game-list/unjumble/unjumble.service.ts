@@ -12,14 +12,7 @@ import { FileManager } from '@/utils';
 import { shuffleWord } from './utils/shuffle.util';
 import { type ICreateUnjumble } from './schema';
 
-interface IUnjumbleJson {
-  score_per_sentence: number;
-  is_randomized: boolean;
-  sentences: Array<{
-    sentence_text: string;
-    sentence_image: string | null;
-  }>;
-}
+import { IUnjumbleJson } from '@/common/interface/games/unjumble.interface';
 
 export class UnjumbleService {
 
@@ -136,7 +129,7 @@ export class UnjumbleService {
       },
     });
 
-    if (!game || game.game_template.slug !== UnjumbleService.UNJUMBLE_SLUG)
+    if (!game || game.game_template.slug !== this.UNJUMBLE_SLUG)
       throw new ErrorResponse(StatusCodes.NOT_FOUND, 'Game not found');
 
     if (game.creator_id !== user_id)
@@ -220,7 +213,7 @@ export class UnjumbleService {
     try {
       await FileManager.deleteFolder(`game/unjumble/${game_id}`);
     } catch (error) {
-      console.error(`Failed to delete folder for game ${game_id}:`, error);
+      throw new Error(`Failed to delete folder for game ${game_id}: ${String(error)}`);
     }
 
     return deletedGame;
@@ -346,42 +339,6 @@ export class UnjumbleService {
       message: correct ? 'Correct Answer' : 'Wrong Answer',
       score: correct ? 10 : 0,
     };
-  }
-
-  async addPlayCount(gameId?: string, userId?: string): Promise<void> {
-    try {
-      if (gameId) {
-        const game = await prisma.games.findUnique({
-          where: { id: gameId },
-          select: { is_published: true },
-        });
-
-        if (!game || !game.is_published)
-          throw new Error('Game not found');
-
-        const tx: (Prisma.Prisma__GamesClient<any> | Prisma.Prisma__UsersClient<any>)[] = [];
-
-        tx.push(prisma.games.update({
-          where: { id: gameId },
-          data: { total_played: { increment: 1 } },
-        }));
-
-        if (userId) {
-          tx.push(prisma.users.update({
-            where: { id: userId },
-            data: { total_game_played: { increment: 1 } },
-          }));
-        }
-
-        await prisma.$transaction(tx);
-        return;
-      }
-      await prisma.games.updateMany({
-        where: { game_template: { slug: UnjumbleService.UNJUMBLE_SLUG } },
-        data: { total_played: { increment: 1 } },
-      });
-    } catch (err) {
-    }
   }
 }
 

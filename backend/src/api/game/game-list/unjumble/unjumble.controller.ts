@@ -269,19 +269,24 @@ export const UnjumbleController = Router()
 
   .post(
     "/play-count",
-    async (req, res, next) => {
+    validateAuth({ optional: true}),
+    async (
+      req: AuthedRequest<{}, {}, { game_id:string}>,
+      res: Response, 
+      next: NextFunction) => {
       try {
-        await unjumbleService.addPlayCount()
+        const { game_id } = req.body;
+        await GameService.updateGamePlayCount(game_id, req.user?.user_id);
 
         return res.status(StatusCodes.OK).json(
           new SuccessResponse(
             StatusCodes.OK,
-            "Play count added",
+            "Game play count updated",
             null
           ).json()
-        )
+        );
       } catch (error) {
-        next(error)
+        next(error);
       }
-    }
+    },
   );
