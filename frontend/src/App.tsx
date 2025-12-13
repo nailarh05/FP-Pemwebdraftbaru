@@ -12,7 +12,7 @@ import EditQuiz from "./pages/EditQuiz";
 import EditUnjumble from "./pages/unjumble/EditUnjumble";
 import Quiz from "./pages/Quiz";
 import ProtectedRoute from "./routes/ProtectedRoutes";
-import Unjumble from "./pages/unjumble/gameUnjumble";
+import PlayUnjumble from "./pages/unjumble/PlayUnjumble";
 
 function App() {
   return (
@@ -23,8 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/sandbox" element={<Sandbox />} />
         <Route path="/quiz/play/:id" element={<Quiz />} />
-        <Route path="/unjumble" element={<Unjumble />} />
-        <Route path="/unjumble/play/:id" element={<Unjumble />} />
+        <Route path="/unjumble/play/:id" element={<PlayUnjumble />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
