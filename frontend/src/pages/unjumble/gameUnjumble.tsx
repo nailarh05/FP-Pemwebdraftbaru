@@ -4,6 +4,7 @@ import UnjumbleWord from "./unjumbleWord";
 import SentenceArea from "./sentence";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import toast from "react-hot-toast";
 
 // --- Tipe Data ---
 interface Word {
@@ -199,6 +200,9 @@ export default function Unjumble() {
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
+      toast.success("Correct! +1 pts 🎉");
+    } else {
+      toast.error("Incorrect. Moving to next question.");
     }
 
     if (currentQuestionIndex < QUESTIONS.length - 1) {
@@ -307,7 +311,7 @@ export default function Unjumble() {
         <div>
           <h1 className="text-3xl font-extrabold text-indigo-700 flex items-center gap-3">
             <span>🧩</span>
-            <span>Unjumble — Yuk Susun, Seru Banget! 🎉</span>
+            <span>Unjumble 🎉</span>
           </h1>
           <p className="text-sm text-indigo-600 mt-1 italic">
             Soal {currentQuestionIndex + 1} dari {QUESTIONS.length} — Pilih kata dan susun kalimat yang benar
